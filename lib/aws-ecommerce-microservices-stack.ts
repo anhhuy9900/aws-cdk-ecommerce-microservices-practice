@@ -1,6 +1,8 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import { SwnApiGateway } from './api-gateway';
+import { SwnDatabase } from './database';
+import { SwnMicroservices } from './microservice';
 
 export class AwsEcommerceMicroservicesStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -8,9 +10,15 @@ export class AwsEcommerceMicroservicesStack extends cdk.Stack {
 
     // The code that defines your stack goes here
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'AwsEcommerceMicroservicesQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    // Init Database
+    const database = new SwnDatabase(this, 'Database');
+
+    const microservices = new SwnMicroservices(this, 'Microservices', {
+      productTable: database.productTable
+    });
+
+    const apiGateWay = new SwnApiGateway(this, 'ApiGateway', {
+      productMicroservice: microservices.productMicroservice
+    })
   }
 }
