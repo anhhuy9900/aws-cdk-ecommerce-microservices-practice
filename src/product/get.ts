@@ -3,7 +3,7 @@ import { GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { ddbClient } from './ddbClient';
 
 export default async(productId: number | string) => {
-    console.log('create-product -> productId: ', productId);
+    console.log('getProduct -> productId: ', productId);
     try {
         const params = {
             TableName: process.env.DYNAMODB_TABLE_NAME,

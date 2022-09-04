@@ -12,3 +12,7 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * `cdk deploy`      deploy this stack to your default AWS account/region
 * `cdk diff`        compare deployed stack with current state
 * `cdk synth`       emits the synthesized CloudFormation template
+
+#CLI Put event to event bus
+ 
+* `aws events put-events --entries file://checkoutbasketevents.json`
