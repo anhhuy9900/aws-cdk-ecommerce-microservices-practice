@@ -12,7 +12,10 @@ exports.handler = async (event: any) => {
   // TODO - Catch and Process Async EventBridge Invocation and Sync API Gateway Invocation
   const eventType = event["detail-type"];
 
-  if (eventType !== undefined) {
+  if(event.Records != null) {
+    // SQS Invocation
+    await sqsInvocation(event);
+  } else if (eventType !== undefined) {
     // EventBridge Invocation
     await eventBridgeInvocation(event);
   } else {
@@ -20,6 +23,23 @@ exports.handler = async (event: any) => {
     return await apiGatewayInvocation(event);
   }
 };
+
+const sqsInvocation = async (event: any) => {
+  console.log(`sqsInvocation function. event : "${event}"`);
+  
+  event.Records.forEach(async (record: any) => {
+    console.log('Record: %j', record);
+    
+    // expected request : { "detail-type\":\"CheckoutBasket\",\"source\":\"com.swn.basket.checkoutbasket\", "detail\":{\"userName\":\"swn\",\"totalPrice\":1820, .. }
+    const checkoutEventRequest = JSON.parse(record.body); 
+
+    console.log('checkoutEventRequest: ', record);
+    
+    // create order item into db
+    await createOrder(checkoutEventRequest.detail); 
+    // detail object should be checkoutbasket json object
+  });
+}
 
 const eventBridgeInvocation = async (event: any) => {
   console.log(`eventBridgeInvocation function. event : "${event}"`);
